@@ -58,3 +58,57 @@ loenn_data<- data.frame(
 loenn_data
 save(loenn_data, file = "loenn_data.Rdata")
 load(file = "loenn_data.Rdata")
+
+# Jobbe med datasettet:
+# Eksempel: finne gjennomsnittsalderen i datasettet:
+# bruke $
+mean(loenn_data$alder)
+
+# bruke attach()/detach():
+attach(loenn_data) # knytter alle variablene i datasettet til R-sesjonen
+mean(alder)
+
+detach("loenn_data") # fjerner variableneknyttet til datasettet til R-sesjonen
+
+# bruke with():
+with(loenn_data,mean(alder))
+
+# kan legge mer inn:
+with(loenn_data,{
+    print(alder)
+    mean(alder)})
+
+# Hente data fra tabellen:
+# først rad,så kolonne
+loenn_data[,3]
+loenn_data[3,]
+loenn_data[,"alder"]
+
+# Datatyper
+lengde<-c(1.78,1.67,1.87,1.99,2.00)
+class(lengde)
+# endre datatype:
+as.integer(lengde)
+as.numeric(lengde)
+
+class(kjonn)
+
+kjonn<- factor(kjonn,levels = c("kvinne","mann"))
+kjonn
+
+# Kan bruke factor() for å kode variabler som inneholder tekstinput som kan graderes f.eks utdanning
+utdtype <- c("Doktorg","Masterg","Bachelorg",
+             "Bachelorg","Videreg")
+utdtype <- factor(utdtype, ordered=TRUE,
+                  levels = c("Ungdoms","Videreg","Bachelorg",
+                             "Masterg","Doktorg"))
+utdtype
+# legg merke til at "TRUE" rangerer utdanningene
+
+# Eksempel:
+skala<- c("Ingen","Alt","Noe","Passelig")
+skala<-factor(skala,ordered=TRUE,
+              levels = c("Intet","Noe","Passelig","Alt"))
+skala
+
+# labels() gir navn til kategorier:
