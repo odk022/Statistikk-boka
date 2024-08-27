@@ -103,3 +103,75 @@ loenn_data[c(1,4:5),]
 mann<-loenn_data[,"kjoenn"]=="mann"
 loenn_data[mann,]
 mann
+# lager eget datasett:
+loenn_data2<-loenn_data[mann,]
+# Endrer på dette:
+
+
+# Tilføye observasjoner og variabler
+# rbind() - tilføye rekker(rowbind)(observasjoner) og cbind - tilføye kolonner(variabler)
+
+print(loenn_data)
+print(loenn_data2)
+
+# Slår sammen datasettene
+loenn_data_m<-rbind(loenn_data,loenn_data2)
+loenn_data_m
+
+# legger til variabler(utvide datasettet:
+# Vil legge til sivstatus til datasettet
+sivstat <- c("single","gift","gift","gift","single")
+sivstat
+
+loenn_data_siv <- cbind(loenn_data, sivstat)
+loenn_data_siv
+
+# Endre variabel- og kolonnenavn:
+#colnames()
+
+colnames(loenn_data)
+colnames(loenn_data)[3]<- "age" # endrer overskrift kolonne 3
+head(loenn_data,3) # 3 her betyr at bare tre rader vises
+
+# Endre alle:
+colnames(loenn_data) <- c("respid","wage","age","gender","educ")
+head(loenn_data)
+
+# Matriser
+# alle elementer i en matrise må være av samme datatype
+
+mat1<- matrix(1:9, ncol=3)
+mat1
+
+#radvis:
+mat2<- matrix(1:9, ncol=3, byrow=TRUE) 
+mat2
+
+# bruker samme funksjoner ved endring som for datarammer
+
+# Lister:
+# Har ingen restriksjoner i forhold til datatyper
+# Eksempel:
+v <- c(200, 345, 500, 100, 444) # en vektor
+d <- data.frame(x1=c(1:5), x2=c(6:10)) # en dataramme
+m <- matrix(1:9, ncol=3) # matrise
+
+# Vi slår dette sammen til en liste:
+minliste <- list(v, d, m)
+minliste
+
+minliste[3] # bruker 3 fordi matrisen er element 3 i listen. Er listeelement 
+minliste[[3]] # dobbel hakeparentes gir tilbake matrisen
+
+# anta at vi vil trekke ut verdien 8 fra matrisen
+m1<- minliste[3]
+m1
+#Indeksen til m1 er [[1]]
+m1[[1]][8]
+
+# Kan også bruke dobbelt hakeparentes
+m2<-minliste[[3]] # henter listeelement 3 som er en matrise
+m2
+m2[8]
+# eller
+m2[2,3]
