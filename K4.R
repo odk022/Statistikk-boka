@@ -121,5 +121,81 @@ ChickWeight2<- mutate(ChickWeight2,
 head(ChickWeight2)
 # Vi ser at dummy-variablen kommer rett inn i datasettet her
 
-# Endre datatyen til variabler:
+# Endre datatypen til variabler:
+# Eksempel - lager en dataframe som vi kaller eksdata
+eksdata<-data.frame(Alder= c(28,35,45,29,43,50,32),
+                    Antallfag=factor(c(5,8,9,8,12,15,9)),
+                    Studie= c("econ", "psy", "lit", "lit", "econ", "soc", "geog"),
+                    stringsAsFactors = FALSE) # siste slik at det ikke lages faktor av tekstvariabel
+str(eksdata)
 
+#endre Studie fra tekst(char) til factor
+eksdata<- mutate( eksdata, Studie = as.factor(Studie))
+str(eksdata)
+
+# Endre Antallfag fra factor til numeric
+eksdata<- mutate(eksdata, Antallfag =as.numeric(as.character(Antallfag)))
+str(eksdata)
+#NB dette kan bare brukes når teksten "ser ut som" tall, hvis ikke får vi NA
+# Eks:
+as.numeric(c("hundred", "eleven", "ten", "10"))
+
+# Endre Alder fra numerisk til kategorisk(factor)
+eksdata<- mutate(eksdata, Alder= as.factor(Alder))
+str(eksdata)
+
+# Merkelapp for variabler
+eksdata<- mutate(eksdata, Motivasjon = c(2,5,4,2,1,5,3)) # lager en ny 
+str(eksdata)
+library(Hmisc) # for å lage merkelappen
+
+label(eksdata$Motivasjon)<-
+        "1 = ikke motivert, 5 = veldig motivert"
+str(eksdata)
+
+# Rydde opp i kategoriske variabler:
+#eks:
+land<-factor(c("England", "Storbritania", "Holland","Nederland","Holland","England", "Storbritania"))
+library(forcats)
+fct_recode(land, Nederland= "Holland",
+           Storbritania = "England")
+# mer uryddig - bruke collapse() som slår sammen kategorier til en
+land<-factor(c("Dutch","Wales","Skottland", "Holland","Nederland", "Storbritania","England"))
+land<-fct_collapse(land,
+                   Nederland = c("Dutch","Holland","Nederland"),
+                   Storbritania = c("Wales","Skottland", "Storbritania","England"))
+land
+
+# Redigering av datasett
+msq
+help(msq)
+names(msq)
+personality <- select(msq, Extraversion,Neuroticism,Lie,Sociability,Impulsivity)
+dim(personality) # sjekker om datasettet er like stort som orginalen
+# Hvis variablene våre lå etter hverandre i datasettet, kunne vi ha brukt tegnet":" mellom variablene
+personality <- select(msq, Extraversion:Impulsivity)
+dim(personality)
+# Kan også bruke -c(happy:sociable)
+personality3 <- select(personality, -Lie, -Sociability)
+head(personality3)
+names(personality3)
+
+# Velge observasjoner
+library(psych)
+head(bfi)
+kvbfi <- filter(bfi, gender == 2) # henter kvinnedata
+dim(kvbfi)
+
+# sjekker om dette er riktig ved å lage en frekvensfordeling
+library(summarytools)
+freq(bfi$gender, report.nas = FALSE)
+# lage datasett med kvinner med vgs over 40 år
+kv50vid_bfi <- filter(bfi, gender == 2 & education == 2 & age > 40)
+dim(kv50vid_bfi)
+
+# yngre enn 20 eller eldre enn40
+dim(filter(bfi, age<20 | age>40))
+
+# velge utfra radnummer: - bruke "slice"
+første50 <- slice(bfi, 1:50)
+dim(første50)
