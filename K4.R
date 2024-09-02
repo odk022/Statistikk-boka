@@ -199,3 +199,113 @@ dim(filter(bfi, age<20 | age>40))
 # velge utfra radnummer: - bruke "slice"
 første50 <- slice(bfi, 1:50)
 dim(første50)
+
+# hente i ikke-sammemhengende rekke:
+nonseqdata <- slice(bfi, c(5,12,27,44,66,234,555,600,734,891))
+dim(nonseqdata)
+
+# Slå sammen datasett på variabler
+
+datasett1<- data_frame(hoeyde = c(178,193,165,185,170),
+                       alder = c(18,23,21,35,66))
+datasett1
+
+datasett2<- data_frame(kjoenn = c("M","M", "K","M","K"),
+                       vekt = c(92,105,57,88,60))
+datasett2
+
+datasett3<- bind_cols(datasett1,datasett2) # bruker "bind_cols"
+datasett3
+
+# Slå sammen datasett på observasjoner
+
+data1<- data_frame(timer_trent = c(2,1,0,5,8,22),
+                   alder = c(66,34,39,25,27,21))
+data1
+
+data2<- data_frame(timer_trent =c(5,15,3,4,7,18),
+                   alder = c(22,25,50,44,33,21))
+data2
+data3<- bind_rows(data1,data2) # bruker "bind_rows"
+data3
+
+# Å sortere datasett
+data_stig_hoeyde<- arrange(datasett3,hoeyde) #evt(desc(hoeyde))
+data_stig_hoeyde
+
+#flere variabler
+arrange(datasett3, kjoenn,vekt)
+
+# Endre datasett til vidt/langt
+
+gruppe<- c(1,2,3,4)
+    t1<- c(5,3,2,6)
+    t2<- c(6,4,6,5)
+    t3<- c(6,5,6,7)
+    t4<- c(7,6,8,9)
+    
+vid_data<- data_frame(gruppe,t1,t2,t3,t4) # lager et vidt datasett
+vid_data
+# vi ser at dataene omfatter 4 grupper der t* angir tidspunkt for måling av stressnivå
+# Lager langt datasett ved å lage en ny variabel "Tidspunkt" og bruker funksjonen "gather" fra
+# tidyr som legges i lang_data
+
+lang_data<- gather(vid_data,Tidspunkt, stressnivå,t1:t4)
+lang_data
+
+# Gjøre dette om til et vidt datasett:
+
+vid_data2<- spread(lang_data, Tidspunkt,stressnivå)
+# datasettet vi vil endre, variablene vi vil framstille i vidt format,navnet på 
+# variablen som inneholder verdiene for de ulike tidspunktene.
+vid_data2
+
+# Endre variabelrekkefølge:
+names(bfi)
+# flytte gender,education, age til begynnelsen:
+bfi_ord<- select(bfi,gender,education,age, everything()) # everything betyr resten
+names(bfi_ord)
+
+# Eks alle variable som starter med prefiks "N" først
+
+bfi_ord2<- select(bfi, starts_with("N"), everything())
+names((bfi_ord2))
+
+# har også "ends_with" og "contains()"
+bfi_ord2a<- select(bfi, ends_with("n"), everything())
+names((bfi_ord2a))
+
+bfi_ord2b<- select(bfi, contains("n"), everything())
+names((bfi_ord2b))
+
+# Trekke tilfeldig utvalg fra et datasett
+# Henter datasettet 
+Orange
+names(Orange)
+
+# Vil ha 10 tilfeldige observasjoner
+Orange_10<- sample_n(Orange,10)
+dim(Orange_10)
+
+# Henter prosentandel:
+Orange_40p<-sample_frac(Orange,0.4) # henter 40% av observasjonene
+dim(Orange_40p)
+
+# Kjedeoperator %>% "pipe"
+#Eks
+data("ChickWeight")
+head(ChickWeight)
+
+Diet2Chicks<- filter(ChickWeight, Diet == 1)
+head(Diet2Chicks)
+
+# Med pipe:
+ChickWeight4<- ChickWeight %>% 
+                filter(Diet == 1) %>% # henter de som har fått diett 1
+                mutate(logweight = weight) %>% # lager ny variabel som er log av weight. 
+                # Den er basert på de filtrerte data
+                select(logweight) %>%  # velg bare logweight fra dette datasettet
+                sample_n(5) # velg tilfeldig 5 observasjoner
+ChickWeight4
+# NB Resultatet vil variere fra gang til gang(det er jo tilfeldig utvalg)
+
