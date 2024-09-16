@@ -224,3 +224,68 @@ ggplot(nyeStudenter, aes(x=studenter, fill=alder)) +
         panel.grid = element_line(size = 0))
 
 # skalaer
+# bruker "scales" for å endre utseendet til dataelementer
+ggplot(nyeStudenter, aes(x=studenter, fill=alder)) +
+  geom_histogram(bins=20) +
+  scale_fill_manual(values = c("<18"="red",
+                               "19-29"= "pink",
+                               ">30"= "orange"))
+# bruker altså "values" for å bestemme fargen avhengig av verdi på variabelen aldersklasse
+
+# lage forklaring
+ggplot(nyeStudenter, aes(x=studenter, fill=alder)) +
+  geom_histogram(bins=20) +
+  scale_fill_manual(values = c("<18"="red",
+                               "19-29"= "pink",
+                               ">30"= "orange")) +
+  scale_fill_discrete(labels = c("<18"="unge",
+                               "19-29"= "unge voksne",
+                               ">30"= "eldre voksne"))
+
+# kan også endre inndeling på aksene, forandre aksetekst eller f.eks lagte en log-transformasjon
+ggplot(nyeStudenter, aes(x=studenter, fill=alder)) +
+  geom_histogram(bins=20) +
+  scale_x_continuous(position = "top",
+                     breaks = c(100,1000,10000),
+                     labels = c(expression(10^2),expression(10^3),expression(10^4)),
+                     trans = "log")
+
+# Tittel, tekst, annotasjoner
+
+ggplot(nyeStudenter, aes(x=studenter, fill=alder)) +
+  geom_histogram(bins=20) +
+  labs(title = "Antall studenter i Norge",
+       subtitle = "per aldersklasse, år og kjønn",
+       tag = "A",
+       x= "Antall nye studenter per år",
+       y= "antall år",
+       caption = "Fargekoden beskriver forskjellige aldersklasse; 
+       de fleste studentene er mellom 19 og 29 år
+       når de begynner")
+
+# for å trekke fram eller beskrive enkelte aspekter av en figur brukes "annotate":
+ggplot(nyeStudenter, aes(x=studenter, fill=alder)) +
+  geom_histogram(bins=20) +
+  annotate("text", x=3000, y=30, color="green",
+           label="unge studenter") +
+  annotate("text", x=9000, y=15, color="red",
+           label="eldre studenter") +
+  annotate("text", x=20000, y=10, color="blue",
+           label="typisk alder")
+
+# rektangel rundt elementer
+ggplot(nyeStudenter, aes(x=studenter, fill=alder)) +
+  geom_histogram(bins=20) +
+  annotate("rect", xmin=10000, ymin = -1,xmax = 28000, ymax = 10,
+           color="blue", alpha=.2)
+
+# trekke fram enkelte datapunkter
+outlier<- filter(sat.act, ACT<10 | SATQ<300) # lager datasett på utliggere
+ggplot(sat.act,aes(x=ACT,y=SATQ)) +
+  geom_point() +
+  annotate("point", x=outlier$ACT, y=outlier$SATQ,
+           color="red", size=8, shape="O") #"O" lager sirkel rundt verdien
+
+# Lagring av figurer
+ggsave("sat_act_plot1.png") # siste ledd angir format
+ggsave("sat_act_plot1.png",width = 5,height = 3, units ="cm")
