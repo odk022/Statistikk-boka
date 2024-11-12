@@ -101,3 +101,24 @@ compTukey <- glht(model4, linfct=mcp(beliggenhet="Tukey"),
 summary(compTukey)
 # Den eneste forskjellen som er signifikant er mellom soer og sentrum
 
+# 8.6 mer enn en dummy og en kovariat
+model7 <- lm(pris ~ beliggenhet + stoerrelse, data = leilighet)
+summary(model7) # se forklarinng side 242
+
+# 8.7 reg med to separate dummy sett
+leilighet <- mutate(leilighet, 
+                    miljoemerking = 
+                      factor(miljoemerking,
+                             levels = c(1, 2, 3),
+                             labels = c("best", "middels",
+                                        "daarlig")))
+
+model8 <- lm(pris ~ beliggenhet + miljoemerking, data = leilighet)
+summary(model8) # forklaring side 245
+
+library(car)
+linearHypothesis(model8, c("beliggenhetsoer = 0", 
+                           "beliggenhetvest = 0", 
+                           "beliggenhetoest = 0"))
+linearHypothesis(model8, c("miljoemerkingmiddels = 0", 
+                           "miljoemerkingdaarlig = 0"))
